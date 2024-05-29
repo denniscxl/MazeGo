@@ -51,7 +51,8 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
     private Sprite[] _timeImg;
 
     private int _curLevelDifficult = 1; // 关卡等级. 数据更新时,  UI可能未初始化成功. 故需要缓存更新.
-    
+
+    private bool _bShowArrow = false;   // 每局游戏开始前读取一次箭头情报.
     #endregion
 
     #region PublicMethod
@@ -73,6 +74,7 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
     {
         UpdateMazePosition();
         UpdateTime();
+        UpdateArrowState();
     }
 
     private void Serializable()
@@ -126,6 +128,8 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
 
         // 更新玩家信息面板.
         UpdateInfo();
+
+
     }
 
     private void UpdateInfo()
@@ -162,9 +166,33 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
         m_ctl.NumberC.sprite = _timeImg[c];
     }
 
+    /// <summary>
+    /// 更新BUFF 指向终点箭头方向.
+    /// </summary>
+    private void UpdateArrowState()
+    {
+        if(_bShowArrow)
+        {
+            if(null != MazeSystem.Instance().curSelectTile && null != MazeSystem.Instance().endPoint)
+            {
+                Vector2 scoure = new Vector2(MazeSystem.Instance().curSelectTile.col, MazeSystem.Instance().curSelectTile.row);
+                Vector2 target = new Vector2(MazeSystem.Instance().endPoint.x, MazeSystem.Instance().endPoint.y);
+
+                Vector2 direction = target - scoure;
+
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 90;
+                Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
+
+                m_ctl.Arrow.transform.rotation = rotation;
+            }
+        }
+    }
+
     private void OnGameBegin()
     {
         Debug.Log("OnGameBegin");
+        _bShowArrow = MazeSystem.Instance().GetData().GetAttribute((int)EObjectAttr.MazeBuffArrow).ValInt == 1;
+        m_ctl.Arrow.SetActive(_bShowArrow);
     }
 
     /// <summary>

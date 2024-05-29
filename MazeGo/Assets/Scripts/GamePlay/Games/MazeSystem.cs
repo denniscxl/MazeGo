@@ -37,6 +37,7 @@ public class MazeSystem : GKSingleton<MazeSystem>
     }
 
     public AStarRedBlackSearch _aStar = null;       // 寻路句柄.
+    public Node endPoint = new Node(0, 0);
     #endregion
 
     #region PrivateField
@@ -50,9 +51,9 @@ public class MazeSystem : GKSingleton<MazeSystem>
     #region PublicMethod
     public void Init()
     {
-
+        
     }
-
+    
     public void Update()
     {
         if(_curlevelTime > 0 && !MyGame.Instance.isPause)
@@ -189,7 +190,7 @@ public class MazeSystem : GKSingleton<MazeSystem>
     /// </summary>
     public void GenerateMaze()
     {
-        GenerateDeepSearchMaze.Instance().GenerateMaze(MAP_WIDTH + mazeSizeAddition, MAP_HEIGHT + mazeSizeAddition, out mapData);
+        endPoint = GenerateDeepSearchMaze.Instance().GenerateMaze(MAP_WIDTH + mazeSizeAddition, MAP_HEIGHT + mazeSizeAddition, out mapData);
         mapListData = Array2List(mapData);
         _aStar = new AStarRedBlackSearch(mapListData, MAP_WIDTH + mazeSizeAddition);
         if (null != OnGameBeginEvent)
@@ -232,7 +233,10 @@ public class MazeSystem : GKSingleton<MazeSystem>
     public void UpdateLevelTime()
     {
         if (1 == MazeSystem.Instance().GetLvDifficult())
+        {
             _curlevelTime = MAX_LEVEL_TIME;
+            
+        }
         else
             _curlevelTime += GetTotalIncrementTime();
 
@@ -249,6 +253,7 @@ public class MazeSystem : GKSingleton<MazeSystem>
 
     public void GameOver()
     {
+        ResetBuffState();
         UpdateLevelPassTime(_lv, _levelBeginTime);
         _curlevelTime = -1;
         ResetLvDifficult();
@@ -327,25 +332,32 @@ public class MazeSystem : GKSingleton<MazeSystem>
     }
 
     /// <summary>
+    /// 重置迷宫游戏的状态.
+    /// </summary>
+    public void ResetBuffState()
+    {
+        // 新一局游戏开始时初始化Buff状态.
+        for (int i = 0; i < GK.EnumCount<MazeBuffType>(); i++)
+        {
+            SetBuffState((MazeBuffType)i, 0);
+        }
+    }
+
+    /// <summary>
     /// 设置Buff状态.
     /// </summary>
-    /// <param name="t"> buff类型 </param>
+    /// <param name="t"> buff类型 0: off 1: on </param>
     /// <param name="isOn"> 是否打开 </param>
-    public void SetBuffState(MazeBuffType t, bool isOn)
+    public void SetBuffState(MazeBuffType t, int isOn)
     {
-
+        switch(t)
+        {
+            case MazeBuffType.Arrow:
+                _data.SetAttribute((int)EObjectAttr.MazeBuffArrow, isOn, true);
+                break;
+        }
     }
     #endregion
-}
-
-public class Node
-{
-    public Node(int x, int y)
-    {
-        this.x = x;
-        this.y = y;
-    }
-    public int x, y;
 }
 
 public class MazeData

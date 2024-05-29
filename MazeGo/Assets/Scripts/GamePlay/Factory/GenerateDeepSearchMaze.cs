@@ -39,15 +39,17 @@ public class GenerateDeepSearchMaze : GKSingleton<GenerateDeepSearchMaze>
     /// <param name="width"> 宽度 </param>
     /// <param name="height"> 高度 </param>
     /// <param name="data"> 地图数据 </param>
-    public void GenerateMaze(int width, int height, out MazeData[,] data)
+    public Node GenerateMaze(int width, int height, out MazeData[,] data)
     {
         _container.Clear();
         GenerateMapData(width, height);
         GenerateClosure();
         GenerateRoguelikeMaze();
-        GenerateStartEndPoint();
+        Node n = GenerateStartEndPoint();
         BreakWall();
         data = _mapData;
+
+        return n;
     }
     #endregion
 
@@ -210,7 +212,7 @@ public class GenerateDeepSearchMaze : GKSingleton<GenerateDeepSearchMaze>
     /// 25/05/30: 增加随机起始与终点. 分别为四个角落. 
     /// 0-左下|1-左上|2-右上|3-右下. 对于重复节点进行跳过处理.
     /// </summary>
-    private void GenerateStartEndPoint()
+    private Node GenerateStartEndPoint()
     {
         int r1 = UnityEngine.Random.Range(0, 4);
         
@@ -221,26 +223,33 @@ public class GenerateDeepSearchMaze : GKSingleton<GenerateDeepSearchMaze>
         }
 
         SetStarEndPoint(r1, MazeTileType.Start);
-        SetStarEndPoint(r2, MazeTileType.End);
+        return SetStarEndPoint(r2, MazeTileType.End);
     }
 
-    private void SetStarEndPoint(int dir, MazeTileType t)
+    private Node SetStarEndPoint(int dir, MazeTileType t)
     {
+        Node n = new Node();
         switch(dir) 
         { 
             case 0:
-                _mapData[1, 1].type = t;
+                n.x = 1; 
+                n.y = 1;
                 break;
             case 1:
-                _mapData[MazeSystem.MAP_HEIGHT + MazeSystem.Instance().mazeSizeAddition - 2, 1].type = t;
+                n.x = 1; 
+                n.y = MazeSystem.MAP_HEIGHT + MazeSystem.Instance().mazeSizeAddition - 2;
                 break;
             case 2:
-                _mapData[MazeSystem.MAP_HEIGHT + MazeSystem.Instance().mazeSizeAddition - 2, MazeSystem.MAP_WIDTH + MazeSystem.Instance().mazeSizeAddition - 2].type = t;
+                n.x = MazeSystem.MAP_WIDTH + MazeSystem.Instance().mazeSizeAddition - 2; 
+                n.y = MazeSystem.MAP_HEIGHT + MazeSystem.Instance().mazeSizeAddition - 2;
                 break;
             case 3:
-                _mapData[1, MazeSystem.MAP_WIDTH + MazeSystem.Instance().mazeSizeAddition - 2].type = t;
+                n.x = MazeSystem.MAP_WIDTH + MazeSystem.Instance().mazeSizeAddition - 2;
+                n.y = 1;
                 break;
         }
+        _mapData[n.y, n.x].type = t;
+        return n;
     }
 
     /// <summary>
@@ -318,4 +327,16 @@ public class GenerateDeepSearchMaze : GKSingleton<GenerateDeepSearchMaze>
         }
     }
     #endregion
+}
+
+public class Node
+{
+    public Node() { }
+
+    public Node(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+    public int x, y;
 }

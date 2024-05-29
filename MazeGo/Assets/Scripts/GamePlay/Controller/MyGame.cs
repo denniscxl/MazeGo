@@ -48,6 +48,10 @@ public class MyGame : SingletonGame<MyGame> {
 
         _uiLogin = UILogin.Open ();
 
+		// 迷宫玩法系统管理器初始化.
+		if (null != MazeSystem.Instance())
+			MazeSystem.Instance().Init();
+
         MyGame.Instance.StartCoroutine (Initialize ());
 	}
 
