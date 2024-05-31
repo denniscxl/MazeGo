@@ -69,7 +69,6 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
         UpdateMazePosition();
         UpdateTime();
         UpdateArrowState();
-        //FogOfWar.Instance().Update();
     }
 
     private void Serializable()
@@ -81,12 +80,12 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
     {
         MazeSystem.Instance().OnGameOverEvent -= OnGameOver;
         MazeSystem.Instance().OnGameOverEvent += OnGameOver;
-        MazeSystem.Instance().OnGameBeginEvent -= OnGameBegin;
-        MazeSystem.Instance().OnGameBeginEvent += OnGameBegin;
     }
 
-    private void Init()
+    private void Init() 
     {
+        Debug.Log("UIMazes_Main - Init");
+
         // 初始化高亮对象.
         highLight = GameObject.Instantiate(_highLightSample).GetComponent<RectTransform>(); ;
 
@@ -124,14 +123,16 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
         // 更新玩家信息面板.
         UpdateInfo();
 
-        m_ctl.Arrow.SetActive(_bShowArrow);
-
         // 构建战争迷雾.
         FogOfWar.Instance().Init(MazeSystem.Instance().GetCurMapTileWidth(), MazeSystem.Instance().GetCurMapTileHeight(), 100, 2, m_ctl.FogRenderer, GetPosition);
         m_ctl.FogRenderer.rectTransform.SetParent(m_ctl.BG.transform);  // 为了能在地图节点之上遮挡.
         m_ctl.FogRenderer.rectTransform.SetParent(m_ctl.Root.transform);
 
         FogOfWar.Instance().Update();
+
+        // 更新Buff状态.
+        _bShowArrow = MazeSystem.Instance().GetData().GetAttribute((int)EObjectAttr.MazeBuffArrow).ValInt == 1;
+        m_ctl.Arrow.SetActive(_bShowArrow);
     }
 
     private void UpdateInfo()
@@ -200,12 +201,6 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
             return Vector2Int.zero;
 
         return new Vector2Int(MazeSystem.Instance().curSelectTile.col, MazeSystem.Instance().curSelectTile.row);
-    }
-
-    private void OnGameBegin()
-    {
-        //Debug.Log("OnGameBegin");
-        _bShowArrow = MazeSystem.Instance().GetData().GetAttribute((int)EObjectAttr.MazeBuffArrow).ValInt == 1;
     }
 
     /// <summary>

@@ -32,7 +32,10 @@ public class MazeSystem : GKSingleton<MazeSystem>
         set 
         { 
             _curSelectTile = value;
-            UIMazes_Main.instance.SetSelectedHighLight(_curSelectTile);
+            if (null != UIMazes_Main.instance)
+                UIMazes_Main.instance.SetSelectedHighLight(_curSelectTile);
+            else
+                Debug.LogError("Set highlight faile, but main panel always deleted.");
         }
     }
 
@@ -193,10 +196,6 @@ public class MazeSystem : GKSingleton<MazeSystem>
         endPoint = GenerateDeepSearchMaze.Instance().GenerateMaze(GetCurMapTileWidth(), GetCurMapTileHeight(), out mapData);
         mapListData = Array2List(mapData);
         _aStar = new AStarRedBlackSearch(mapListData, GetCurMapTileWidth());
-        if (null != OnGameBeginEvent)
-        {
-            OnGameBeginEvent();
-        }
         MyGame.Instance.isPause = false;
     }
 
