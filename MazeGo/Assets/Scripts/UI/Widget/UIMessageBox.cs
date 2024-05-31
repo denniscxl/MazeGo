@@ -74,37 +74,6 @@ public class UIMessageBox : SingletonUIBase<UIMessageBox>
 		OnOKFun = ok;
 		OnCancelFun = cancel;
 	}
-
-    // type 0 card, 1 equipment, 2 consume. 
-    public void ShowResource(string content, int type, int id, string title = "Tips")
-    {
-        m_ctl.Root.SetActive(false);
-        m_ctl.ResourceMegRoot.gameObject.SetActive(true);
-
-        m_ctl.ResTitle.text = title;
-        m_ctl.ResContent.text = content;
-
-        m_ctl.ResIcon.gameObject.SetActive(false);
-        m_ctl.ResRawIcon.gameObject.SetActive(false);
-
-        OnConfirmFun = null;
-
-        switch(type)
-        {
-            case 0:
-                m_ctl.ResRawIcon.gameObject.SetActive(true);
-                m_ctl.ResRawIcon.texture = ConfigController.Instance().GetCardIconTexture(id);
-                break;
-            case 1:
-                m_ctl.ResIcon.gameObject.SetActive(true);
-                m_ctl.ResIcon.sprite = ConfigController.Instance().GetEquipmentSprite(id);
-                break;
-            case 2:
-                m_ctl.ResIcon.gameObject.SetActive(true);
-                m_ctl.ResIcon.sprite = ConfigController.Instance().GetConsumeSprite(id);
-                break;
-        }
-    }
     #endregion
 
     #region PrivateMethod
@@ -260,9 +229,6 @@ public class UIMessageBox : SingletonUIBase<UIMessageBox>
                 break;
             case 1:
                 msg.ShowSelectMsgBox(data._content, data._okText, data._cancelText, data._ok, data._cancel, data._title);
-                break;
-            case 2:
-                msg.ShowResource(data._content, data._resType, data._resID);
                 break;
         }
     }

@@ -40,9 +40,6 @@ public class DataController : GKSingleton<DataController>
             if (_playerDataChanged)
                 _SavePlayerData();
 
-            if (_inventoryChanged)
-                _SaveInventory();
-
             if (_achievementChanged)
                 _SaveAchievement();
 
@@ -61,7 +58,6 @@ public class DataController : GKSingleton<DataController>
     public void SaveData()
     {
         SavePlayerData();
-        SaveInventory();
         SaveAchievement();
         SaveAudioData();
         SaveRending();
@@ -72,7 +68,6 @@ public class DataController : GKSingleton<DataController>
     public void LoadData()
     {
         LoadPlayerData();
-        LoadInventory();
         LoadAchievementList();
         LoadAudio();
         LoadRending();
@@ -84,7 +79,6 @@ public class DataController : GKSingleton<DataController>
     {
         PlayerPrefs.DeleteAll();
         ClearPlayerData();
-        ClearInventory();
         ClearAchievements();
         ClearAudio();
         ClearRending();
@@ -104,14 +98,6 @@ public class DataController : GKSingleton<DataController>
             case LocalizationSubType.ErrorCode:
                 data = Data.GetLocalizationErrorCodeData(ID);
                 break;
-            // Unit.
-            case LocalizationSubType.Unit:
-                data = Data.GetLocalizationUnitData(ID);
-                break;
-            // Item.
-            case LocalizationSubType.Item:
-                data = Data.GetLocalizationItemData(ID);
-                break;
             // Achievement.
             case LocalizationSubType.Achievement:
                 data = Data.GetLocalizationAchiData(ID);
@@ -127,6 +113,10 @@ public class DataController : GKSingleton<DataController>
             // Title Description.
             case LocalizationSubType.TitleDesc:
                 data = Data.GetLocalizationTitleDescData(ID);
+                break;
+            // Maze.
+            case LocalizationSubType.Maze:
+                data = Data.GetLocalizationMazeData(ID);
                 break;
             default:
                 data = Data.GetLocalizationData(ID);
@@ -195,70 +185,6 @@ public class DataController : GKSingleton<DataController>
         string content = GKSerialize.Instance().SerializeObject(PlayerController.Instance().GetDataBase());
         //创建XML文件且写入加密数据.  
         GKBase64.Instance().CreateTextFile(_playerDataPath, content, _Encryption);
-    }
-    #endregion
-
-    #region Inventory
-    // 玩家背包数据存储路径.
-    private string _inventoryPath = string.Format("{0}/UserInventory", Application.persistentDataPath);
-    private bool _inventoryChanged = false;
-
-    // 存储背包数据.
-    public void SaveInventory()
-    {
-        _inventoryChanged = true;
-    }
-
-    // 清空背包数据.
-    private void ClearInventory()
-    {
-        GKFileUtil.DeleteFile(_inventoryPath);
-    }
-
-    // 加载背包数据.
-    private void LoadInventory()
-    {
-        if (!File.Exists(_inventoryPath))
-            return;
-
-        PlayerController.Instance().ClearInventory();
-
-        //读取数据.  
-        try
-        {
-            string file = GKBase64.Instance().LoadTextFile(_inventoryPath, _Encryption);
-            string[] array = file.Split(new string[] { "@@@@@@" }, System.StringSplitOptions.None);
-            foreach (var str in array)
-            {
-                if (string.IsNullOrEmpty(str))
-                    continue;
-
-                string[] keys = str.Split(new string[] { "###" }, System.StringSplitOptions.None);
-                // 添加物品到背包.
-                PlayerController.Instance().NewItem(int.Parse(keys[0]), int.Parse(keys[1]), int.Parse(keys[2]), int.Parse(keys[3]), false);
-            }
-        }
-        catch
-        {
-            Debug.LogError("Load card inventory list faile.");
-        }
-    }
-
-    // 存储背包数据.
-    private void _SaveInventory()
-    {
-        Debug.Log("_SaveInventory");
-
-        _inventoryChanged = false;
-        string content = "";
-        foreach (var item in PlayerController.Instance().GetInventory())
-        {
-            // 存储数据.
-            content += string.Format("{0}###{1}###{2}###{3}", item.Key, (int)item.Value.type, item.Value.id, item.Value.count);
-            content += "@@@@@@";
-        }
-        //创建XML文件且写入加密数据.  
-        GKBase64.Instance().CreateTextFile(_inventoryPath, content, _Encryption);
     }
     #endregion
 
@@ -487,11 +413,9 @@ public enum LocalizationSubType
 {
     Common = 0,         // 0.
     ErrorCode,          // 1.
-    Unit,               // 2.
-    Skill,              // 3.
-    Item,               // 4.
-    Achievement,        // 5.
-    AchievementDesc,    // 6.
-    Title,              // 7.
-    TitleDesc,          // 8.
+    Achievement,        // 2.
+    AchievementDesc,    // 3.
+    Title,              // 4.
+    TitleDesc,          // 5.
+    Maze,               // 6.
 }

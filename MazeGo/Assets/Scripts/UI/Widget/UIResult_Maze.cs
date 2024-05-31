@@ -69,6 +69,7 @@ public class UIResult_Maze : SingletonUIBase<UIResult_Maze>
         m_ctl.TitleText.text = DataController.Instance().GetLocalization(id);
 
         UpdateLevelPassTime();
+        UpdateBuff();
 
         m_ctl.ScoreText.text = _score.ToString();
     }
@@ -116,6 +117,22 @@ public class UIResult_Maze : SingletonUIBase<UIResult_Maze>
         }
 
         m_ctl.PassTimeScrollView.normalizedPosition = new Vector2(0, 0);
+    }
+
+    /// <summary>
+    /// 更新随机BUFF.
+    /// </summary>
+    private void UpdateBuff()
+    {
+        List<MazeBuffType> lst = MazeSystem.Instance().GetRandomBuff();
+        GK.DestroyAllChildren(m_ctl.BuffContent);
+        for (int i = 0; i < lst.Count; i++)
+        {
+            var go = GameObject.Instantiate(m_ctl.UIBuffItemSample.gameObject);
+            go.SetActive(true);
+            GK.SetParent(go, m_ctl.BuffContent, false);
+            GK.GetOrAddComponent<UIBuffItemSample>(go).SetData(lst[i]);
+        }
     }
 
     private void CalcScore(int lv, int passTime)

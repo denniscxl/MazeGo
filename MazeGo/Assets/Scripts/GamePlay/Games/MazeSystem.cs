@@ -340,7 +340,8 @@ public class MazeSystem : GKSingleton<MazeSystem>
         if(0 < lst.Count)
         {
             GK.ShuffleByList<MazeBuffType>(ref lst);
-            for (int i = 0; i < lst.Count; i++)
+            int count = lst.Count> 3 ? 3 : lst.Count;
+            for (int i = 0; i < count; i++)
             {
                 outputLst.Add((MazeBuffType)lst[i]);
             }

@@ -9,10 +9,7 @@ public class UILobby : SingletonUIBase<UILobby>
     [System.Serializable]
     public class Controls
     {
-        public Button InventoryBtn;
-        public Button LotteryBtn;
         public Button AchievementBtn;
-        public Button StoreBtn;
         public Button InformationBtn;
         public Button AthleticsBtn;
         public Button StoryBtn;
@@ -48,10 +45,7 @@ public class UILobby : SingletonUIBase<UILobby>
 
     private void InitListener()
     {
-        GKUIEventTriggerListener.Get(m_ctl.InventoryBtn.gameObject).onClick = OnInventory;
-        GKUIEventTriggerListener.Get(m_ctl.LotteryBtn.gameObject).onClick = OnLottery;
         GKUIEventTriggerListener.Get(m_ctl.AchievementBtn.gameObject).onClick = OnAchievement;
-        GKUIEventTriggerListener.Get(m_ctl.StoreBtn.gameObject).onClick = OnStore;
         GKUIEventTriggerListener.Get(m_ctl.InformationBtn.gameObject).onClick = OnInformation;
         GKUIEventTriggerListener.Get(m_ctl.AthleticsBtn.gameObject).onClick = OnAthletics;
         GKUIEventTriggerListener.Get(m_ctl.StoryBtn.gameObject).onClick = OnStory;
@@ -64,29 +58,9 @@ public class UILobby : SingletonUIBase<UILobby>
         _uiTitle.SetState(false);
     }
 
-    private void OnEquipment(GameObject go)
-    {
-        UIEquipment.Open();
-    }
-
-    private void OnInventory(GameObject go)
-    {
-        UIInventory.Open().SetMode(InventoryOperationMode.Normal);
-    }
-
-    private void OnLottery(GameObject go)
-    {
-        UILottery.Open();
-    }
-
     private void OnAchievement(GameObject go)
     {
         UIAchievement.Open();
-    }
-
-    private void OnStore(GameObject go)
-    {
-        UIStore.Open();
     }
 
     private void OnInformation(GameObject go)

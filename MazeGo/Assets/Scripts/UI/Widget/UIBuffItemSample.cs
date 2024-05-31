@@ -5,6 +5,7 @@ using UnityEngine;
 using DG.Tweening;
 using GKBase;
 using GKUI;
+using Unity.VisualScripting;
 
 public class UIBuffItemSample : UIBase
 {
@@ -12,9 +13,9 @@ public class UIBuffItemSample : UIBase
     [System.Serializable]
     public class Controls
     {
-        public Text LvText;
-        public Text PassTimeText;
-        public Text BestTimeText;
+        public Image Icon;
+        public Text NameText;
+        public Button SelectBtn;
     }
     #endregion
 
@@ -25,17 +26,15 @@ public class UIBuffItemSample : UIBase
     #region PrivateField
     [System.NonSerialized]
     private Controls m_ctl;
+    private MazeBuffType _buffType;
     #endregion
 
     #region PublicMethod
-    public void SetData(int lv, int passTime, int bestTime)
+    public void SetData(MazeBuffType t)
     {
-        m_ctl.LvText.text = lv.ToString();
-        m_ctl.PassTimeText.text = string.Format("{0} : {1}", passTime / 60, passTime % 60);
-        if (-1 != bestTime)
-            m_ctl.BestTimeText.text = string.Format("{0} : {1}", passTime / 60, passTime % 60);
-        else
-            m_ctl.BestTimeText.text = "------";
+        _buffType = t;
+        
+            
     }
     #endregion
 
@@ -54,12 +53,27 @@ public class UIBuffItemSample : UIBase
 
     private void InitListener()
     {
-
+        GKUIEventTriggerListener.Get(m_ctl.SelectBtn.gameObject).onClick = OnSelected;
     }
 
     private void Init()
     {
-       
+        string[] imgs = GK.EnumNames<MazeBuffType>();
+        if (0 <= (int)_buffType && (int)_buffType < imgs.Length)
+        {
+            m_ctl.Icon.sprite = GetBuffTypeSprite(imgs[(int)_buffType]);
+            m_ctl.NameText.text = imgs[(int)_buffType];
+        }
+    }
+
+    private void OnSelected(GameObject go)
+    {
+        MazeSystem.Instance().GetData().SetAttribute((int)EObjectAttr.MazeBuffArrow, 1, true);
+    }
+
+    private Sprite GetBuffTypeSprite(string iconName)
+    {
+        return ConfigController.Instance().GetUISprite("Maze/" + iconName);
     }
     #endregion
 }

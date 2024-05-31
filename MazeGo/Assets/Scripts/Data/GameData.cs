@@ -8,151 +8,6 @@ using UnityEditor;
 
 public class GameData : GKGameData
 {
-    #region Store
-    [System.Serializable]
-    public class StoreData
-    {
-        public int id;
-        public int goldPay;
-        public int goldEarnings;
-        public int diamondPay;
-        public int diamondEarnings;
-        public int itemPay;
-        public int itemEarnings;
-    }
-    [SerializeField]
-    public StoreData[] _storeData;
-    public StoreData GetStoreData(int id)
-    {
-        if (id < 0 || id >= _storeData.Length)
-        {
-            Debug.LogError(string.Format("Get store data faile. id: {0}", id));
-            return null;
-        }
-        return _storeData[id];
-    }
-#if UNITY_EDITOR
-    public void InitStoreProperty(ref SerializedProperty p, int idx)
-    {
-        p.FindPropertyRelative("id").intValue = _storeData[idx].id;
-        p.FindPropertyRelative("goldPay").intValue = _storeData[idx].goldPay;
-        p.FindPropertyRelative("goldEarnings").intValue = _storeData[idx].goldEarnings;
-        p.FindPropertyRelative("diamondPay").intValue = _storeData[idx].diamondPay;
-        p.FindPropertyRelative("diamondEarnings").intValue = _storeData[idx].diamondEarnings;
-        p.FindPropertyRelative("itemPay").intValue = _storeData[idx].itemPay;
-        p.FindPropertyRelative("itemEarnings").intValue = _storeData[idx].itemEarnings;
-    }
-    public void ResetStoreDataTypeArray(int length) { ResetDataArray<StoreData>(length, ref _storeData); }
-#endif
-    #endregion
-
-    #region Lottery
-    [System.Serializable]
-    public class LotteryData
-    {
-        public int id;
-        public int coin;
-        public int diamond;
-    }
-    [SerializeField]
-    public LotteryData[] _lotteryData;
-    public LotteryData GetLotteryData(int id)
-    {
-        if (id < 0 || id >= _lotteryData.Length)
-        {
-            Debug.LogError(string.Format("Get lottery data faile. id: {0}", id));
-            return null;
-        }
-        return _lotteryData[id];
-    }
-#if UNITY_EDITOR
-    public void InitLotteryProperty(ref SerializedProperty p, int idx)
-    {
-        p.FindPropertyRelative("id").intValue = _lotteryData[idx].id;
-        p.FindPropertyRelative("coin").intValue = _lotteryData[idx].coin;
-        p.FindPropertyRelative("diamond").intValue = _lotteryData[idx].diamond;
-    }
-    public void ResetLotteryDataTypeArray(int length) { ResetDataArray<LotteryData>(length, ref _lotteryData); }
-#endif
-    #endregion
-
-    #region Equipment
-    [System.Serializable]
-    public class EquipmentData
-    {
-        public int id;
-        public int name;
-        public int part;
-        public string job;
-        public int strength;
-        public int agility;
-        public int intelligence;
-        public int skillEffectA;
-        public int skillEffectB;
-        public int skillEffectC;
-        public int description;
-    }
-    [SerializeField]
-    public EquipmentData[] _equipmentData;
-    public EquipmentData GetEquipmentData(int id)
-    {
-        if (id < 0 || id >= _equipmentData.Length)
-        {
-            Debug.LogError(string.Format("Get equipment data faile. id: {0}", id));
-            return null;
-        }
-        return _equipmentData[id];
-    }
-#if UNITY_EDITOR
-    public void InitEquipmentProperty(ref SerializedProperty p, int idx)
-    {
-        p.FindPropertyRelative("id").intValue = _equipmentData[idx].id;
-        p.FindPropertyRelative("name").intValue = _equipmentData[idx].name;
-        p.FindPropertyRelative("part").intValue = _equipmentData[idx].part;
-        p.FindPropertyRelative("job").stringValue = _equipmentData[idx].job;
-        p.FindPropertyRelative("strength").intValue = _equipmentData[idx].strength;
-        p.FindPropertyRelative("agility").intValue = _equipmentData[idx].agility;
-        p.FindPropertyRelative("intelligence").intValue = _equipmentData[idx].intelligence;
-        p.FindPropertyRelative("skillEffectA").intValue = _equipmentData[idx].skillEffectA;
-        p.FindPropertyRelative("skillEffectB").intValue = _equipmentData[idx].skillEffectB;
-        p.FindPropertyRelative("skillEffectC").intValue = _equipmentData[idx].skillEffectC;
-        p.FindPropertyRelative("description").intValue = _equipmentData[idx].description;
-    }
-    public void ResetEquipmentDataTypeArray(int length) { ResetDataArray<EquipmentData>(length, ref _equipmentData); }
-#endif
-    #endregion
-
-    #region ConsumeData
-    [System.Serializable]
-    public class ConsumeData
-    {
-        public int id;
-        public int name;
-        public List<int> effect;
-        public int description;
-    }
-    [SerializeField]
-    public ConsumeData[] _consumeData;
-    public ConsumeData GetConsumeData(int id)
-    {
-        if (id < 0 || id >= _consumeData.Length)
-        {
-            Debug.LogError(string.Format("Get consume data faile. id: {0}", id));
-            return null;
-        }
-        return _consumeData[id];
-    }
-#if UNITY_EDITOR
-    public void InitConsumeProperty(ref SerializedProperty p, int idx)
-    {
-        p.FindPropertyRelative("id").intValue = _consumeData[idx].id;
-        p.FindPropertyRelative("name").intValue = _consumeData[idx].name;
-        p.FindPropertyRelative("description").intValue = _consumeData[idx].description;
-    }
-    public void ResetConsumeDataTypeArray(int length) { ResetDataArray<ConsumeData>(length, ref _consumeData); }
-#endif
-    #endregion
-
     #region InventoryUpgrade
     [System.Serializable]
     public class InventoryUpgradeData
@@ -269,52 +124,6 @@ public class GameData : GKGameData
 #endif
     #endregion
 
-    #region LocalizationUnit
-    [SerializeField]
-    public LocalizationData[] _localizationUnitData;
-    public LocalizationData GetLocalizationUnitData(int id)
-    {
-        if (id < 0 || id >= _localizationUnitData.Length)
-        {
-            Debug.LogError(string.Format("Get localization unit data faile. id: {0}", id));
-            return null;
-        }
-        return _localizationUnitData[id];
-    }
-#if UNITY_EDITOR
-    public void InitLocalizationUnitProperty(ref SerializedProperty p, int idx)
-    {
-        p.FindPropertyRelative("id").intValue = _localizationUnitData[idx].id;
-        p.FindPropertyRelative("english").stringValue = _localizationUnitData[idx].english;
-        p.FindPropertyRelative("chinese").stringValue = _localizationUnitData[idx].chinese;
-    }
-    public void ResetLocalizationUnitDataTypeArray(int length) { ResetDataArray<LocalizationData>(length, ref _localizationUnitData); }
-#endif
-    #endregion
-
-    #region LocalizationItem
-    [SerializeField]
-    public LocalizationData[] _localizationItemData;
-    public LocalizationData GetLocalizationItemData(int id)
-    {
-        if (id < 0 || id >= _localizationItemData.Length)
-        {
-            Debug.LogError(string.Format("Get localization item data faile. id: {0}", id));
-            return null;
-        }
-        return _localizationItemData[id];
-    }
-#if UNITY_EDITOR
-    public void InitLocalizationItemProperty(ref SerializedProperty p, int idx)
-    {
-        p.FindPropertyRelative("id").intValue = _localizationItemData[idx].id;
-        p.FindPropertyRelative("english").stringValue = _localizationItemData[idx].english;
-        p.FindPropertyRelative("chinese").stringValue = _localizationItemData[idx].chinese;
-    }
-    public void ResetLocalizationItemDataTypeArray(int length) { ResetDataArray<LocalizationData>(length, ref _localizationItemData); }
-#endif
-    #endregion
-
     #region LocalizationAchievement
     [SerializeField]
     public LocalizationData[] _localizationAchiData;
@@ -407,4 +216,26 @@ public class GameData : GKGameData
 #endif
     #endregion
 
+    #region LocalizationMazeDescription
+    [SerializeField]
+    public LocalizationData[] _localizationMazeData;
+    public LocalizationData GetLocalizationMazeData(int id)
+    {
+        if (id < 0 || id >= _localizationMazeData.Length)
+        {
+            Debug.LogError(string.Format("Get localization Maze data faile. id: {0}", id));
+            return null;
+        }
+        return _localizationMazeData[id];
+    }
+#if UNITY_EDITOR
+    public void InitLocalizationMazeBuffProperty(ref SerializedProperty p, int idx)
+    {
+        p.FindPropertyRelative("id").intValue = _localizationMazeData[idx].id;
+        p.FindPropertyRelative("english").stringValue = _localizationMazeData[idx].english;
+        p.FindPropertyRelative("chinese").stringValue = _localizationMazeData[idx].chinese;
+    }
+    public void ResetLocalizationMazeBuffDataTypeArray(int length) { ResetDataArray<LocalizationData>(length, ref _localizationMazeData); }
+#endif
+    #endregion
 }

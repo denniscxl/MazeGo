@@ -8,9 +8,6 @@ using GKData;
 public class ConfigController : GKSingleton<ConfigController>
 {
     #region PublicField
-    static public readonly int unitCount = 6;
-    static public readonly int equipmentCount = 64;
-    static public readonly int consumeCount = 11;
     #endregion
 
     #region PrivateField
@@ -18,34 +15,6 @@ public class ConfigController : GKSingleton<ConfigController>
 
     #region PublicMethod
     
-
-    // 获取商店商品数据.
-    public void GetStoreItemData(UIStoreClassType type, int level, out int pay, out int earnings)
-    {
-        pay = 0;
-        earnings = 0;
-        // level - 1 == id.
-        var store = DataController.Data.GetStoreData(level-1);
-        if (null == store)
-            return;
-        
-        switch(type)
-        {
-            case UIStoreClassType.Conin:
-                pay = store.goldPay;
-                earnings = store.goldEarnings;
-                break;
-            case UIStoreClassType.Diamond:
-                pay = store.diamondPay;
-                earnings = store.diamondEarnings;
-                break;
-            case UIStoreClassType.Item:
-                pay = store.itemPay;
-                earnings = store.itemEarnings;
-                break;
-        }
-    }
-
     public string GetSpriteName(EObjectAttr type)
     {
         switch(type)
@@ -64,24 +33,6 @@ public class ConfigController : GKSingleton<ConfigController>
         return GetUISprite("MoveType/" + id.ToString());
     }
 
-    // 获取技能图标.
-    public Sprite GetSkillSprite(int id)
-    {
-        return GetUISprite("Skill/" + id.ToString());
-    }
-
-    //  获取装备图标.
-    public Sprite GetEquipmentSprite(int id)
-    {
-        return GetUISprite("Equipment/" + id.ToString());
-    } 
-
-    //  获取消耗品图标.
-    public Sprite GetConsumeSprite(int id)
-    {
-        return GetUISprite("Consume/" + id.ToString());
-    } 
-
     public Sprite GetUISprite(string  spritePath)
     {
         var go = GK.LoadPrefab("UI/Sprites/" + spritePath);
@@ -91,39 +42,10 @@ public class ConfigController : GKSingleton<ConfigController>
         return sprite.sprite;
     }
 
-    public Texture2D GetCardIconTexture(int id)
-    {
-        return GK.LoadTexture2D(string.Format("CardIcons/{0}", id));
-    }
-
     // 获取异常文本信息
     public string GetErrorCode(ErrorCodeType id)
     {
         return DataController.Instance().GetLocalization((int)id, LocalizationSubType.ErrorCode);
-    }
-
-    // 通过名称获取物品名称.
-    public string GetItemNameByType(int type, int id)
-    {
-        string name = string.Empty;
-        switch (type)
-        {
-            case (int)ItemType.Consume:
-                var consume = DataController.Data.GetConsumeData(id);
-                if (null != consume)
-                {
-                    name = DataController.Instance().GetLocalization(consume.name, LocalizationSubType.Item);
-                }
-                break;
-            case (int)ItemType.Equipment:
-                var equipment = DataController.Data.GetEquipmentData(id);
-                if (null != equipment)
-                {
-                    name = DataController.Instance().GetLocalization(equipment.name, LocalizationSubType.Item);
-                }
-                break;
-        }
-        return name;
     }
 
     #region HUDText
