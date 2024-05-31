@@ -120,12 +120,12 @@ public class UIMazeTileSample : UIBase
             MazeSystem.Instance().mapData[y, x].tileSample.SetTileColor(Color.red);
 
         MazeSystem.Instance().curSelectTile = MazeSystem.Instance().mapData[y, x].tileSample;
-
+        FogOfWar.Instance().Update();
         // 判断是否游戏目标达成.
         if (MazeSystem.Instance().mapData[y, x].type == MazeTileType.End)
         {
             MazeSystem.Instance().NextLevel();
-            UIResult.Open().SetData(true);
+            UIResult_Maze.Open().SetData(true);
             UIMazes_Main.Close();
         }
     }
@@ -145,7 +145,7 @@ public class UIMazeTileSample : UIBase
         else
         {
             // 操作优化体验. 点在非周围点, 短距离内可通过寻路到达.
-            List<Node> lst = MazeSystem.Instance().FindPath(row, col, 5);
+            List<Vector2Int> lst = MazeSystem.Instance().FindPath(row, col, 5);
             for (int i = 0; i< lst.Count; i++)
             {
                 Move2Tile(lst[i].x, lst[i].y);

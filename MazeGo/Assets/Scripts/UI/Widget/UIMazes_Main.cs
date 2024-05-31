@@ -1,14 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 using UnityEngine;
-using DG.Tweening;
-using UnityEngine.SceneManagement;
 using GKBase;
 using GKUI;
-using UnityEditorInternal;
-using static UnityEditor.PlayerSettings;
-using TMPro;
 
 public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
 {
@@ -27,6 +20,7 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
         public Text TimeIncrementVal;
         public Text RecordVal;
         public GameObject Arrow;
+        public RawImage FogRenderer;
     }
     #endregion
 
@@ -75,6 +69,7 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
         UpdateMazePosition();
         UpdateTime();
         UpdateArrowState();
+        //FogOfWar.Instance().Update();
     }
 
     private void Serializable()
@@ -97,9 +92,9 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
 
         // 初始化关卡地块对象.
         RectTransform rectTran = null;
-        for (int i = 0; i < MazeSystem.MAP_HEIGHT + MazeSystem.Instance().mazeSizeAddition; ++i)
+        for (int i = 0; i < MazeSystem.Instance().GetCurMapTileHeight(); ++i)
         {
-            for (int j = 0; j < MazeSystem.MAP_WIDTH + MazeSystem.Instance().mazeSizeAddition; ++j)
+            for (int j = 0; j <  MazeSystem.Instance().GetCurMapTileWidth(); ++j)
             {
                 GameObject t = GameObject.Instantiate(_tileSample);
 
@@ -129,7 +124,14 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
         // 更新玩家信息面板.
         UpdateInfo();
 
+        m_ctl.Arrow.SetActive(_bShowArrow);
 
+        // 构建战争迷雾.
+        FogOfWar.Instance().Init(MazeSystem.Instance().GetCurMapTileWidth(), MazeSystem.Instance().GetCurMapTileHeight(), 100, 2, m_ctl.FogRenderer, GetPosition);
+        m_ctl.FogRenderer.rectTransform.SetParent(m_ctl.BG.transform);  // 为了能在地图节点之上遮挡.
+        m_ctl.FogRenderer.rectTransform.SetParent(m_ctl.Root.transform);
+
+        FogOfWar.Instance().Update();
     }
 
     private void UpdateInfo()
@@ -148,7 +150,11 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
         Vector3 offest = _centerTran.position -highLight.position;
         Vector3 targetPos = _rootTran.position + offest;
 
+        // 迷宫坐标更新.
         _rootTran.position = Vector3.Lerp(_rootTran.position, targetPos, Time.deltaTime * _rootMoveSpeed);
+
+        // 更新战争迷雾坐标. 迷雾随地图移动而移动.
+        //_fogOfWarTran.position = Vector3.Lerp(_fogOfWarTran.position, targetPos, Time.deltaTime * _rootMoveSpeed);
     }
 
     private void UpdateTime()
@@ -188,11 +194,18 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
         }
     }
 
+    private Vector2Int GetPosition()
+    {
+        if (null == MazeSystem.Instance().curSelectTile)
+            return Vector2Int.zero;
+
+        return new Vector2Int(MazeSystem.Instance().curSelectTile.col, MazeSystem.Instance().curSelectTile.row);
+    }
+
     private void OnGameBegin()
     {
-        Debug.Log("OnGameBegin");
+        //Debug.Log("OnGameBegin");
         _bShowArrow = MazeSystem.Instance().GetData().GetAttribute((int)EObjectAttr.MazeBuffArrow).ValInt == 1;
-        m_ctl.Arrow.SetActive(_bShowArrow);
     }
 
     /// <summary>
@@ -200,8 +213,8 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
     /// </summary>
     private void OnGameOver()
     {
-        Debug.Log("OnGameOver");
-        UIResult.Open().SetData(false);
+        //Debug.Log("OnGameOver");
+        UIResult_Maze.Open().SetData(false);
         Close();
     }
     #endregion

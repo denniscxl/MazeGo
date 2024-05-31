@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using GKBase;
-using System;
-using System.Reflection;
 
 /// <summary>
 /// 2024/05/25
@@ -39,13 +36,13 @@ public class GenerateDeepSearchMaze : GKSingleton<GenerateDeepSearchMaze>
     /// <param name="width"> 宽度 </param>
     /// <param name="height"> 高度 </param>
     /// <param name="data"> 地图数据 </param>
-    public Node GenerateMaze(int width, int height, out MazeData[,] data)
+    public Vector2Int GenerateMaze(int width, int height, out MazeData[,] data)
     {
         _container.Clear();
         GenerateMapData(width, height);
         GenerateClosure();
         GenerateRoguelikeMaze();
-        Node n = GenerateStartEndPoint();
+        Vector2Int n = GenerateStartEndPoint();
         BreakWall();
         data = _mapData;
 
@@ -212,7 +209,7 @@ public class GenerateDeepSearchMaze : GKSingleton<GenerateDeepSearchMaze>
     /// 25/05/30: 增加随机起始与终点. 分别为四个角落. 
     /// 0-左下|1-左上|2-右上|3-右下. 对于重复节点进行跳过处理.
     /// </summary>
-    private Node GenerateStartEndPoint()
+    private Vector2Int GenerateStartEndPoint()
     {
         int r1 = UnityEngine.Random.Range(0, 4);
         
@@ -226,9 +223,9 @@ public class GenerateDeepSearchMaze : GKSingleton<GenerateDeepSearchMaze>
         return SetStarEndPoint(r2, MazeTileType.End);
     }
 
-    private Node SetStarEndPoint(int dir, MazeTileType t)
+    private Vector2Int SetStarEndPoint(int dir, MazeTileType t)
     {
-        Node n = new Node();
+        Vector2Int n = new Vector2Int();
         switch(dir) 
         { 
             case 0:
@@ -237,14 +234,14 @@ public class GenerateDeepSearchMaze : GKSingleton<GenerateDeepSearchMaze>
                 break;
             case 1:
                 n.x = 1; 
-                n.y = MazeSystem.MAP_HEIGHT + MazeSystem.Instance().mazeSizeAddition - 2;
+                n.y = MazeSystem.Instance().GetCurMapTileHeight() - 2;
                 break;
             case 2:
-                n.x = MazeSystem.MAP_WIDTH + MazeSystem.Instance().mazeSizeAddition - 2; 
-                n.y = MazeSystem.MAP_HEIGHT + MazeSystem.Instance().mazeSizeAddition - 2;
+                n.x = MazeSystem.Instance().GetCurMapTileWidth() - 2; 
+                n.y = MazeSystem.Instance().GetCurMapTileHeight() - 2;
                 break;
             case 3:
-                n.x = MazeSystem.MAP_WIDTH + MazeSystem.Instance().mazeSizeAddition - 2;
+                n.x = MazeSystem.Instance().GetCurMapTileWidth() - 2;
                 n.y = 1;
                 break;
         }
@@ -329,14 +326,3 @@ public class GenerateDeepSearchMaze : GKSingleton<GenerateDeepSearchMaze>
     #endregion
 }
 
-public class Node
-{
-    public Node() { }
-
-    public Node(int x, int y)
-    {
-        this.x = x;
-        this.y = y;
-    }
-    public int x, y;
-}

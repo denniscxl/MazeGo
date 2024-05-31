@@ -3,7 +3,7 @@ using UnityEngine;
 using GKBase;
 using GKUI;
 
-public class UIOption : SingletonUIBase<UIOption>
+public class UIOption_Maze : SingletonUIBase<UIOption_Maze>
 {
     #region Serializable
     [System.Serializable]
@@ -138,7 +138,8 @@ public class UIOption : SingletonUIBase<UIOption>
     private void OnExit(GameObject go)
     {
         MyGame.Instance.isPause = false;
-        UIResult.Open().SetData(false);
+
+        UIResult_Maze.Open().SetData(false);
         LevelController.Instance().Exit();
         Close();
     }

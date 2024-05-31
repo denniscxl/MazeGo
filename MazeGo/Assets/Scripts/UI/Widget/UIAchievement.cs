@@ -74,7 +74,7 @@ public class UIAchievement : SingletonUIBase<UIAchievement>
         InitListener();
         Init();
 
-        UITitle.Close();
+        UITitle_Maze.Close();
     }
 
     private void Serializable()
@@ -181,7 +181,7 @@ public class UIAchievement : SingletonUIBase<UIAchievement>
 
     private void OnBack(GameObject go)
     {
-        UITitle.Open();
+        UITitle_Maze.Open();
         Close();
     }
 

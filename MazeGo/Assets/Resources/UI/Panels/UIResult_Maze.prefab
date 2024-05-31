@@ -761,9 +761,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 224044643226086168}
-  - component: {fileID: 114439060946160572}
+  - component: {fileID: 745803560}
   m_Layer: 5
-  m_Name: UIResult
+  m_Name: UIResult_Maze
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -802,7 +802,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -1125, y: -519.55054}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &114439060946160572
+--- !u!114 &745803560
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -814,7 +814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdcce6a73631e43e1b00f8585e236593, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  priority: 91
+  priority: 0
 --- !u!1 &1593504827957852
 GameObject:
   m_ObjectHideFlags: 0

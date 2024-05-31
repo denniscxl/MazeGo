@@ -6,7 +6,7 @@ using GKBase;
 using GKUI;
 using GKData;
 
-public class UIResult : SingletonUIBase<UIResult>
+public class UIResult_Maze : SingletonUIBase<UIResult_Maze>
 {
     #region Serializable
     [System.Serializable]

@@ -45,7 +45,7 @@ public class UIMain : SingletonUIBase<UIMain>
     [System.NonSerialized]
     private Controls m_ctl;
     private UIVirtualJoyStick _vietualJoyStick = null;
-    private UITitle _uiTitle;
+    private UITitle_Maze _uiTitle;
     #endregion
 
     #region PublicMethod
@@ -138,7 +138,7 @@ public class UIMain : SingletonUIBase<UIMain>
         CameraStateChange(CameraController.Instance().GetCurrentState());
         if (null == _vietualJoyStick)
             _vietualJoyStick = UIVirtualJoyStick.Open();
-        _uiTitle = UITitle.Open();
+        _uiTitle = UITitle_Maze.Open();
         _uiTitle.SetState(true);
 
         OnShowContentChanged();

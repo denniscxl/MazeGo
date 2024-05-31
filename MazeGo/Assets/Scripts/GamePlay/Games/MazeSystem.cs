@@ -37,7 +37,7 @@ public class MazeSystem : GKSingleton<MazeSystem>
     }
 
     public AStarRedBlackSearch _aStar = null;       // 寻路句柄.
-    public Node endPoint = new Node(0, 0);
+    public Vector2Int endPoint = new Vector2Int(0, 0);
     #endregion
 
     #region PrivateField
@@ -53,7 +53,7 @@ public class MazeSystem : GKSingleton<MazeSystem>
     {
         
     }
-    
+
     public void Update()
     {
         if(_curlevelTime > 0 && !MyGame.Instance.isPause)
@@ -171,7 +171,7 @@ public class MazeSystem : GKSingleton<MazeSystem>
     /// <returns> 地块总数 </returns>
     public int GetMapTileSize()
     {
-        return (MAP_HEIGHT + mazeSizeAddition) * (MAP_WIDTH + mazeSizeAddition);
+        return GetCurMapTileHeight() * GetCurMapTileWidth();
     }
 
     public int GetCurMapTileWidth()
@@ -190,9 +190,9 @@ public class MazeSystem : GKSingleton<MazeSystem>
     /// </summary>
     public void GenerateMaze()
     {
-        endPoint = GenerateDeepSearchMaze.Instance().GenerateMaze(MAP_WIDTH + mazeSizeAddition, MAP_HEIGHT + mazeSizeAddition, out mapData);
+        endPoint = GenerateDeepSearchMaze.Instance().GenerateMaze(GetCurMapTileWidth(), GetCurMapTileHeight(), out mapData);
         mapListData = Array2List(mapData);
-        _aStar = new AStarRedBlackSearch(mapListData, MAP_WIDTH + mazeSizeAddition);
+        _aStar = new AStarRedBlackSearch(mapListData, GetCurMapTileWidth());
         if (null != OnGameBeginEvent)
         {
             OnGameBeginEvent();
@@ -205,14 +205,14 @@ public class MazeSystem : GKSingleton<MazeSystem>
     /// </summary>
     public void GenerateAroundTile()
     {
-        for (int i = 0; i < MAP_HEIGHT + mazeSizeAddition; i++)
+        for (int i = 0; i < GetCurMapTileHeight(); i++)
         {
-            for (int j = 0; j < MAP_WIDTH + mazeSizeAddition; j++)
+            for (int j = 0; j < GetCurMapTileWidth(); j++)
             {
                 // 上.
-                mapData[i, j].tileSample.aroundTils[0] = (i != MAP_HEIGHT + mazeSizeAddition - 1) ? mapData[i+1, j].tileSample : null;
+                mapData[i, j].tileSample.aroundTils[0] = (i != GetCurMapTileHeight() - 1) ? mapData[i+1, j].tileSample : null;
                 // 右.
-                mapData[i, j].tileSample.aroundTils[1] = (j != MAP_WIDTH + mazeSizeAddition - 1) ? mapData[i, j+1].tileSample : null;
+                mapData[i, j].tileSample.aroundTils[1] = (j != GetCurMapTileWidth() - 1) ? mapData[i, j+1].tileSample : null;
                 // 下.
                 mapData[i, j].tileSample.aroundTils[2] = (i != 0) ? mapData[i-1, j].tileSample : null;
                 // 左.
@@ -266,9 +266,9 @@ public class MazeSystem : GKSingleton<MazeSystem>
     /// <param name="targetY"> 终点行坐标 </param>
     /// <param name="targetX"> 终点列坐标 </param>
     /// /// <param name="len"> 步长极限 </param>
-    public List<Node> FindPath(int targetY, int targetX, int len)
+    public List<Vector2Int> FindPath(int targetY, int targetX, int len)
     {
-        List<Node> lst = new List<Node>();
+        List<Vector2Int> lst = new List<Vector2Int>();
 
         if (null == curSelectTile)
             return lst;
@@ -276,23 +276,80 @@ public class MazeSystem : GKSingleton<MazeSystem>
 
         // AStar 寻路.
         Dictionary<int, int> path = _aStar.FindPath(
-            Node2Index(new Node(curSelectTile.col, curSelectTile.row), MAP_WIDTH + mazeSizeAddition), 
-            Node2Index(new Node(targetX, targetY), MAP_WIDTH + mazeSizeAddition));
+            Node2Index(new Vector2Int(curSelectTile.col, curSelectTile.row), GetCurMapTileWidth()), 
+            Node2Index(new Vector2Int(targetX, targetY), GetCurMapTileWidth()));
 
         if (null != path && path.Count > len)
             path.Clear();
 
         // 局部坐标与世界左边转换.
-        List<Node> outputLst = new List<Node>();
+        List<Vector2Int> outputLst = new List<Vector2Int>();
         if (null != path)
         {
             foreach (var k in path.Keys)
             {
-                outputLst.Add(Index2Node(k, MAP_WIDTH + mazeSizeAddition, GetMapTileSize()));
+                outputLst.Add(Index2Node(k, GetCurMapTileWidth(), GetMapTileSize()));
             }
         }
         return outputLst;
     }
+
+    /// <summary>
+    /// 重置迷宫游戏的状态.
+    /// </summary>
+    public void ResetBuffState()
+    {
+        // 新一局游戏开始时初始化Buff状态.
+        for (int i = 0; i < GK.EnumCount<MazeBuffType>(); i++)
+        {
+            SetBuffState((MazeBuffType)i, 0);
+        }
+    }
+
+    /// <summary>
+    /// 设置Buff状态.
+    /// </summary>
+    /// <param name="t"> buff类型 0: off 1: on </param>
+    /// <param name="isOn"> 是否打开 </param>
+    public void SetBuffState(MazeBuffType t, int isOn)
+    {
+        switch (t)
+        {
+            case MazeBuffType.Arrow:
+                _data.SetAttribute((int)EObjectAttr.MazeBuffArrow, isOn, true);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 获得当前未获得Buff中最多随机三个.
+    /// </summary>
+    /// <returns> Buff列表 </returns>
+    public List<MazeBuffType> GetRandomBuff()
+    {
+        List<MazeBuffType> lst = new List<MazeBuffType>();
+        List<MazeBuffType> outputLst = new List<MazeBuffType>();
+
+        for (int i = 0; i < GK.EnumCount<MazeBuffType>(); i++)
+        {
+            if (GetData().GetAttribute((int)EObjectAttr.MazeBuffArrow + i).ValInt == 0)
+            {
+                lst.Add((MazeBuffType)i);
+            }
+        }
+        if(0 < lst.Count)
+        {
+            GK.ShuffleByList<MazeBuffType>(ref lst);
+            for (int i = 0; i < lst.Count; i++)
+            {
+                outputLst.Add((MazeBuffType)lst[i]);
+            }
+        }
+
+        return outputLst;
+    }
+
+    
     #endregion
 
     #region PrivateMethod
@@ -317,45 +374,18 @@ public class MazeSystem : GKSingleton<MazeSystem>
     /// <param name="n"> 节点对象 </param>
     /// <param name="width"> 地图宽度 </param>
     /// <returns></returns>
-    private int Node2Index(Node n, int width)
+    private int Node2Index(Vector2Int n, int width)
     {
         if (null == n) return -1;
         return n.y * width + n.x;
     }
 
-    private Node Index2Node(int index, int width, int count)
+    private Vector2Int Index2Node(int index, int width, int count)
     {
         if(index < 0 || index > count-1)
-            return null;
+            return Vector2Int.zero;
 
-        return new Node(index% width, index / width);
-    }
-
-    /// <summary>
-    /// 重置迷宫游戏的状态.
-    /// </summary>
-    public void ResetBuffState()
-    {
-        // 新一局游戏开始时初始化Buff状态.
-        for (int i = 0; i < GK.EnumCount<MazeBuffType>(); i++)
-        {
-            SetBuffState((MazeBuffType)i, 0);
-        }
-    }
-
-    /// <summary>
-    /// 设置Buff状态.
-    /// </summary>
-    /// <param name="t"> buff类型 0: off 1: on </param>
-    /// <param name="isOn"> 是否打开 </param>
-    public void SetBuffState(MazeBuffType t, int isOn)
-    {
-        switch(t)
-        {
-            case MazeBuffType.Arrow:
-                _data.SetAttribute((int)EObjectAttr.MazeBuffArrow, isOn, true);
-                break;
-        }
+        return new Vector2Int(index% width, index / width);
     }
     #endregion
 }
@@ -378,5 +408,17 @@ public enum MazeTileType
 
 public enum MazeBuffType
 {
-    Arrow = 0,  // 终点箭头.
+    Arrow = 0,          // 终点箭头.
+    TimeIncrementI,     // 回合结束时间增量 - 1.
+    TimeIncrementII,    // 回合结束时间增量 - 2.
+    TimeIncrementIII,   // 回合结束时间增量 - 3.
+    TimeAdditionI,      // 一次性时间增量 - 5.
+    TimeAdditionII,     // 一次性时间增量 - 10.
+    TimeAdditionIII,    // 一次性时间增量 - 15.
+    MapDecrementI,      // 回合结束地图尺寸减量 - 1.
+    MapDecrementII,     // 回合结束地图尺寸减量 - 2.
+    MapDecrementIII,    // 回合结束地图尺寸减量 - 3.
+    MapReduceI,         // 一次性地图尺寸减少量 - 3.
+    MapReduceII,        // 一次性地图尺寸减少量 - 5.
+    MapReduceIII,       // 一次性地图尺寸减少量 - 8.
 }

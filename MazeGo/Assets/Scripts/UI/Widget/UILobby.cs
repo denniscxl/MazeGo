@@ -26,7 +26,7 @@ public class UILobby : SingletonUIBase<UILobby>
     #region PrivateField
     [System.NonSerialized]
     private Controls m_ctl;
-    private UITitle _uiTitle;
+    private UITitle_Maze _uiTitle;
     #endregion
 
     #region PublicMethod
@@ -60,7 +60,7 @@ public class UILobby : SingletonUIBase<UILobby>
 
     private void Init()
     {
-        _uiTitle = UITitle.Open();
+        _uiTitle = UITitle_Maze.Open();
         _uiTitle.SetState(false);
     }
 

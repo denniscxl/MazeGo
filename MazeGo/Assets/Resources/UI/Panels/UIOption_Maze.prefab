@@ -4307,7 +4307,7 @@ GameObject:
   - component: {fileID: 224634800420664590}
   - component: {fileID: 114387322282457598}
   m_Layer: 5
-  m_Name: UIOption
+  m_Name: UIOption_Maze
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

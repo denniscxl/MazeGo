@@ -4,7 +4,7 @@ using GKBase;
 using GKData;
 using GKUI;
 
-public class UITitle : SingletonUIBase<UITitle>
+public class UITitle_Maze : SingletonUIBase<UITitle_Maze>
 {
     #region Serializable
     [System.Serializable]
@@ -120,7 +120,7 @@ public class UITitle : SingletonUIBase<UITitle>
 
     private void OnOptition(GameObject go)
     {
-        UIOption.Open();
+        UIOption_Maze.Open();
     }
 
     private void OnCoinChanged(object obj, GKCommonValue attr)
