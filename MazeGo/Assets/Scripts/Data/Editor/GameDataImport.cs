@@ -19,6 +19,8 @@ public class GameDataImport
         var basename = System.IO.Path.GetFileName(filename);
 
         if (basename == "GameData_AchievementData.csv") { OnImportAchievementData(filename, data); return; }
+        if (basename == "GameData_MazeMonsterData.csv") { OnImportMazeMonsterData(filename, data); return; }
+        if (basename == "GameData_MazeTownData.csv") { OnImportMazeTownData(filename, data); return; }
         if (basename == "GameData_LocalizationData.csv") { OnImportLocalizationData(filename, data); return; }
         if (basename == "GameData_LocalizationErrorCodeData.csv") { OnImportLocalizationErrorCodeData(filename, data); return; }
         if (basename == "GameData_LocalizationAchiData.csv") { OnImportLocalizationAchiData(filename, data); return; }
@@ -26,7 +28,10 @@ public class GameDataImport
         if (basename == "GameData_LocalizationTitleData.csv") { OnImportLocalizationTitleData(filename, data); return; }
         if (basename == "GameData_LocalizationTitleDescData.csv") { OnImportLocalizationTitleDescData(filename, data); return; }
         if (basename == "GameData_LocalizationMazeData.csv") { OnImportLocalizationMazeData(filename, data); return; }
-            
+        if (basename == "GameData_LocalizationMazeBuffData.csv") { OnImportLocalizationMazeBuffData(filename, data); return; }
+        if (basename == "GameData_LocalizationMazeMonsterData.csv") { OnImportLocalizationMazeMonsterData(filename, data); return; }
+        if (basename == "GameData_LocalizationMazeTownData.csv") { OnImportLocalizationMazeTownData(filename, data); return; }
+
     }
     static void OnImportAchievementData(string filename, GameData data)
     {
@@ -59,6 +64,74 @@ public class GameDataImport
                 continue;
 
             data._achievementData[d.id] = d;
+        }
+    }
+
+    static void OnImportMazeMonsterData(string filename, GameData data)
+    {
+        var p = GKCSVParser.OpenFile(filename, "#columns");
+        if (p == null) return;
+
+        int row = 0;
+
+        // Calc valid lines.
+        while (p.NextRow())
+        {
+            if (p.isRowStartWith("#")) continue;
+
+            row++;
+        }
+
+        // Reset readIndex to 3.
+        p.ResetReadIndex();
+        // Init item data array.
+        data.ResetMazeMonsterDataTypeArray(row);
+
+        while (p.NextRow())
+        {
+            if (p.isRowStartWith("#")) continue;
+
+            var d = new GameData.MazeMonsterData();
+            p.RowToObject<GameData.MazeMonsterData>(ref d);
+
+            if (null == d || d.id < 0 || d.id >= data._mazeMonsterData.Length)
+                continue;
+
+            data._mazeMonsterData[d.id] = d;
+        }
+    }
+
+    static void OnImportMazeTownData(string filename, GameData data)
+    {
+        var p = GKCSVParser.OpenFile(filename, "#columns");
+        if (p == null) return;
+
+        int row = 0;
+
+        // Calc valid lines.
+        while (p.NextRow())
+        {
+            if (p.isRowStartWith("#")) continue;
+
+            row++;
+        }
+
+        // Reset readIndex to 3.
+        p.ResetReadIndex();
+        // Init item data array.
+        data.ResetMazeTownDataTypeArray(row);
+
+        while (p.NextRow())
+        {
+            if (p.isRowStartWith("#")) continue;
+
+            var d = new GameData.MazeTownData();
+            p.RowToObject<GameData.MazeTownData>(ref d);
+
+            if (null == d || d.id < 0 || d.id >= data._mazeTownData.Length)
+                continue;
+
+            data._mazeTownData[d.id] = d;
         }
     }
 
@@ -284,7 +357,7 @@ public class GameDataImport
         // Reset readIndex to 3.
         p.ResetReadIndex();
         // Init item data array.
-        data.ResetLocalizationMazeBuffDataTypeArray(row);
+        data.ResetLocalizationMazeDataTypeArray(row);
 
         while (p.NextRow())
         {
@@ -297,6 +370,108 @@ public class GameDataImport
                 continue;
 
             data._localizationMazeData[d.id] = d;
+        }
+    }
+
+    static void OnImportLocalizationMazeBuffData(string filename, GameData data)
+    {
+        var p = GKCSVParser.OpenFile(filename, "#columns");
+        if (p == null) return;
+
+        int row = 0;
+
+        // Calc valid lines.
+        while (p.NextRow())
+        {
+            if (p.isRowStartWith("#")) continue;
+
+            row++;
+        }
+
+        // Reset readIndex to 3.
+        p.ResetReadIndex();
+        // Init item data array.
+        data.ResetLocalizationMazeBuffDataTypeArray(row);
+
+        while (p.NextRow())
+        {
+            if (p.isRowStartWith("#")) continue;
+
+            var d = new GameData.LocalizationData();
+            p.RowToObject<GameData.LocalizationData>(ref d);
+
+            if (null == d || d.id < 0 || d.id >= data._localizationMazeBuffData.Length)
+                continue;
+
+            data._localizationMazeBuffData[d.id] = d;
+        }
+    }
+
+    static void OnImportLocalizationMazeMonsterData(string filename, GameData data)
+    {
+        var p = GKCSVParser.OpenFile(filename, "#columns");
+        if (p == null) return;
+
+        int row = 0;
+
+        // Calc valid lines.
+        while (p.NextRow())
+        {
+            if (p.isRowStartWith("#")) continue;
+
+            row++;
+        }
+
+        // Reset readIndex to 3.
+        p.ResetReadIndex();
+        // Init item data array.
+        data.ResetLocalizationMazeMonsterDataTypeArray(row);
+
+        while (p.NextRow())
+        {
+            if (p.isRowStartWith("#")) continue;
+
+            var d = new GameData.LocalizationData();
+            p.RowToObject<GameData.LocalizationData>(ref d);
+
+            if (null == d || d.id < 0 || d.id >= data._localizationMazeMonsterData.Length)
+                continue;
+
+            data._localizationMazeMonsterData[d.id] = d;
+        }
+    }
+
+    static void OnImportLocalizationMazeTownData(string filename, GameData data)
+    {
+        var p = GKCSVParser.OpenFile(filename, "#columns");
+        if (p == null) return;
+
+        int row = 0;
+
+        // Calc valid lines.
+        while (p.NextRow())
+        {
+            if (p.isRowStartWith("#")) continue;
+
+            row++;
+        }
+
+        // Reset readIndex to 3.
+        p.ResetReadIndex();
+        // Init item data array.
+        data.ResetLocalizationMazeTownDataTypeArray(row);
+
+        while (p.NextRow())
+        {
+            if (p.isRowStartWith("#")) continue;
+
+            var d = new GameData.LocalizationData();
+            p.RowToObject<GameData.LocalizationData>(ref d);
+
+            if (null == d || d.id < 0 || d.id >= data._localizationMazeTownData.Length)
+                continue;
+
+            data._localizationMazeTownData[d.id] = d;
         }
     }
 }

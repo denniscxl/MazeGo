@@ -71,6 +71,78 @@ public class GameData : GKGameData
 #endif
     #endregion
 
+    #region MazeMonsterData
+    [System.Serializable]
+    public class MazeMonsterData
+    {
+        public int id;
+        public int hp;
+        public float speed;
+    }
+    [SerializeField]
+    public MazeMonsterData[] _mazeMonsterData;
+    public MazeMonsterData GetMazeMonsterData(int id)
+    {
+        if (id < 0 || id >= _mazeMonsterData.Length)
+        {
+            Debug.LogError(string.Format("Get maze monster data faile. id: {0}", id));
+            return null;
+        }
+        return _mazeMonsterData[id];
+    }
+#if UNITY_EDITOR
+    public void InitMazeMonsterProperty(ref SerializedProperty p, int idx)
+    {
+        p.FindPropertyRelative("id").intValue = _mazeMonsterData[idx].id;
+        p.FindPropertyRelative("hp").intValue = _mazeMonsterData[idx].hp;
+        p.FindPropertyRelative("speed").floatValue = _mazeMonsterData[idx].speed;
+    }
+    public void ResetMazeMonsterDataTypeArray(int length) { ResetDataArray<MazeMonsterData>(length, ref _mazeMonsterData); }
+#endif
+    #endregion
+
+    #region MazeTownData
+    [System.Serializable]
+    public class MazeTownData
+    {
+        public int id;
+        public int damage;
+        public float atkSpeed;
+        public float range;
+        public int targetType;
+        public float bulletSpeed;
+        public float time;
+        public float bulletRange;
+        public int bulletType;
+    }
+    [SerializeField]
+    public MazeTownData[] _mazeTownData;
+    public MazeTownData GetMazeTownData(int id)
+    {
+        if (id < 0 || id >= _mazeTownData.Length)
+        {
+            Debug.LogError(string.Format("Get maze town data faile. id: {0}", id));
+            return null;
+        }
+        return _mazeTownData[id];
+    }
+#if UNITY_EDITOR
+    public void InitMazeTownProperty(ref SerializedProperty p, int idx)
+    {
+        p.FindPropertyRelative("id").intValue = _mazeTownData[idx].id;
+        p.FindPropertyRelative("damage").intValue = _mazeTownData[idx].damage;
+        p.FindPropertyRelative("atkSpeed").floatValue = _mazeTownData[idx].atkSpeed;
+        p.FindPropertyRelative("range").floatValue = _mazeTownData[idx].range;
+        p.FindPropertyRelative("targetType").intValue = _mazeTownData[idx].targetType;
+        p.FindPropertyRelative("bulletSpeed").floatValue = _mazeTownData[idx].bulletSpeed;
+        p.FindPropertyRelative("time").floatValue = _mazeTownData[idx].time;
+        p.FindPropertyRelative("bulletRange").floatValue = _mazeTownData[idx].bulletRange;
+        p.FindPropertyRelative("bulletType").intValue = _mazeTownData[idx].bulletType;
+    }
+    public void ResetMazeTownDataTypeArray(int length) { ResetDataArray<MazeTownData>(length, ref _mazeTownData); }
+#endif
+    #endregion
+
     #region Localization
     [System.Serializable]
     public class LocalizationData
@@ -216,7 +288,7 @@ public class GameData : GKGameData
 #endif
     #endregion
 
-    #region LocalizationMazeDescription
+    #region LocalizationMaze
     [SerializeField]
     public LocalizationData[] _localizationMazeData;
     public LocalizationData GetLocalizationMazeData(int id)
@@ -229,13 +301,82 @@ public class GameData : GKGameData
         return _localizationMazeData[id];
     }
 #if UNITY_EDITOR
-    public void InitLocalizationMazeBuffProperty(ref SerializedProperty p, int idx)
+    public void InitLocalizationMazeProperty(ref SerializedProperty p, int idx)
     {
         p.FindPropertyRelative("id").intValue = _localizationMazeData[idx].id;
         p.FindPropertyRelative("english").stringValue = _localizationMazeData[idx].english;
         p.FindPropertyRelative("chinese").stringValue = _localizationMazeData[idx].chinese;
     }
-    public void ResetLocalizationMazeBuffDataTypeArray(int length) { ResetDataArray<LocalizationData>(length, ref _localizationMazeData); }
+    public void ResetLocalizationMazeDataTypeArray(int length) { ResetDataArray<LocalizationData>(length, ref _localizationMazeData); }
+#endif
+    #endregion
+
+    #region LocalizationMazeBuff
+    [SerializeField]
+    public LocalizationData[] _localizationMazeBuffData;
+    public LocalizationData GetLocalizationMazeBuffData(int id)
+    {
+        if (id < 0 || id >= _localizationMazeBuffData.Length)
+        {
+            Debug.LogError(string.Format("Get localization Maze Buff data faile. id: {0}", id));
+            return null;
+        }
+        return _localizationMazeBuffData[id];
+    }
+#if UNITY_EDITOR
+    public void InitLocalizationMazeBuffProperty(ref SerializedProperty p, int idx)
+    {
+        p.FindPropertyRelative("id").intValue = _localizationMazeBuffData[idx].id;
+        p.FindPropertyRelative("english").stringValue = _localizationMazeBuffData[idx].english;
+        p.FindPropertyRelative("chinese").stringValue = _localizationMazeBuffData[idx].chinese;
+    }
+    public void ResetLocalizationMazeBuffDataTypeArray(int length) { ResetDataArray<LocalizationData>(length, ref _localizationMazeBuffData); }
+#endif
+    #endregion
+
+    #region LocalizationMazeMonster
+    [SerializeField]
+    public LocalizationData[] _localizationMazeMonsterData;
+    public LocalizationData GetLocalizationMazeMonsterData(int id)
+    {
+        if (id < 0 || id >= _localizationMazeMonsterData.Length)
+        {
+            Debug.LogError(string.Format("Get localization Maze Monster data faile. id: {0}", id));
+            return null;
+        }
+        return _localizationMazeMonsterData[id];
+    }
+#if UNITY_EDITOR
+    public void InitLocalizationMazeMonsterProperty(ref SerializedProperty p, int idx)
+    {
+        p.FindPropertyRelative("id").intValue = _localizationMazeMonsterData[idx].id;
+        p.FindPropertyRelative("english").stringValue = _localizationMazeMonsterData[idx].english;
+        p.FindPropertyRelative("chinese").stringValue = _localizationMazeMonsterData[idx].chinese;
+    }
+    public void ResetLocalizationMazeMonsterDataTypeArray(int length) { ResetDataArray<LocalizationData>(length, ref _localizationMazeMonsterData); }
+#endif
+    #endregion
+
+    #region LocalizationMazeTown
+    [SerializeField]
+    public LocalizationData[] _localizationMazeTownData;
+    public LocalizationData GetLocalizationMazeTownData(int id)
+    {
+        if (id < 0 || id >= _localizationMazeTownData.Length)
+        {
+            Debug.LogError(string.Format("Get localization Maze Town data faile. id: {0}", id));
+            return null;
+        }
+        return _localizationMazeTownData[id];
+    }
+#if UNITY_EDITOR
+    public void InitLocalizationMazeTownProperty(ref SerializedProperty p, int idx)
+    {
+        p.FindPropertyRelative("id").intValue = _localizationMazeTownData[idx].id;
+        p.FindPropertyRelative("english").stringValue = _localizationMazeTownData[idx].english;
+        p.FindPropertyRelative("chinese").stringValue = _localizationMazeTownData[idx].chinese;
+    }
+    public void ResetLocalizationMazeTownDataTypeArray(int length) { ResetDataArray<LocalizationData>(length, ref _localizationMazeTownData); }
 #endif
     #endregion
 }

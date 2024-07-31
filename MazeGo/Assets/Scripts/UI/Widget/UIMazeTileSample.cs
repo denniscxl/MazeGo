@@ -17,10 +17,11 @@ public class UIMazeTileSample : UIBase
     #endregion
 
     #region PublicField
-    public bool bTouch = false;
     public UIMazeTileSample [] aroundTils = new UIMazeTileSample[4]; // 周围上右下左节点.
     public int row = 0;
     public int col = 0;
+    public bool isPass = false;
+    public bool isBuild = false;
     #endregion
 
     #region PrivateField
@@ -61,6 +62,9 @@ public class UIMazeTileSample : UIBase
             case MazeTileType.End:
                 m_ctl.Bg.GetComponent<Image>().color = Color.yellow;
                 break;
+            case MazeTileType.Nest:
+                m_ctl.Bg.GetComponent<Image>().color = new Color(255f / 255f, 165f / 255f, 0f / 255f); ;
+                break;
             case MazeTileType.Test:
                 m_ctl.Bg.GetComponent<Image>().color = Color.blue;
                 break;
@@ -99,6 +103,7 @@ public class UIMazeTileSample : UIBase
     private void InitListener()
     {
         GKUIEventTriggerListener.Get(m_ctl.Bg.gameObject).onEnter = OnEnter;
+        GKUIEventTriggerListener.Get(m_ctl.Bg.gameObject).onClick = OnClick;
     }
 
     private void Init()
@@ -106,50 +111,118 @@ public class UIMazeTileSample : UIBase
         SetTileIcon(MazeSystem.Instance().mapData[row, col].type);
     }
 
-    public void SetTileColor(Color c)
+    private void SetTileColor(Color c)
     {
         m_ctl.Bg.GetComponent<Image>().color = c;
     }
 
-    public void Move2Tile(int x, int y)
+    private void Move2Tile(int x, int y)
     {
         MazeTileType tileType = MazeSystem.Instance().mapData[y, x].type;
 
-        // 起点终点地块颜色不变.
-        if (tileType != MazeTileType.Start && tileType != MazeTileType.End)
+        // 起点终点, 巢穴地块颜色不变.
+        if (tileType != MazeTileType.Start && tileType != MazeTileType.End && tileType != MazeTileType.Nest)
+        {
             MazeSystem.Instance().mapData[y, x].tileSample.SetTileColor(Color.red);
-
+            MazeSystem.Instance().mapData[y, x].tileSample.isPass = true;
+        }
+            
         MazeSystem.Instance().curSelectTile = MazeSystem.Instance().mapData[y, x].tileSample;
         FogOfWar.Instance().Update();
-        // 判断是否游戏目标达成.
+        // 判断是否游戏目标达成. 
         if (MazeSystem.Instance().mapData[y, x].type == MazeTileType.End)
         {
-            MazeSystem.Instance().NextLevel();
-            UIResult_Maze.Open().SetData(true);
-            UIMazes_Main.Close();
+            MazeSystem.Instance().NextStep();
         }
     }
 
-    public void OnEnter(GameObject go)
+    private void OnEnter(GameObject go)
     {
+        //Debug.Log("OnEnter");
         MazeTileType tileType = MazeSystem.Instance().mapData[row, col].type;
 
-        // 墙体不可行走.
-        if (tileType == MazeTileType.Wall)
-            return;
-
-        if (IsAround( MazeSystem.Instance().curSelectTile))
+        if (MazeSystem.Instance().GetGameStep() == MazeGameplayStep.Maze)
         {
-            Move2Tile(col, row);
+            // 墙体不可行走.
+            if (tileType == MazeTileType.Wall || tileType == MazeTileType.Nest)
+                return;
+
+            if (IsAround(MazeSystem.Instance().curSelectTile))
+            {
+                Move2Tile(col, row);
+            }
+            else
+            {
+                // 操作优化体验. 点在非周围点, 短距离内可通过寻路到达.
+                if (null == MazeSystem.Instance().curSelectTile)
+                    return;
+
+                List<Vector2Int> lst = MazeSystem.Instance().FindPath(MazeSystem.Instance().curSelectTile.row, MazeSystem.Instance().curSelectTile.col, row, col, 5);
+                for (int i = 0; i < lst.Count; i++)
+                {
+                    Move2Tile(lst[i].x, lst[i].y);
+                }
+            }
+        }
+        else if(MazeSystem.Instance().GetGameStep() == MazeGameplayStep.TownDefense)
+        {
+            if (tileType == MazeTileType.Wall)
+            {
+                MazeSystem.Instance().curSelectTile = this;
+                FogOfWar.Instance().Update();
+            }
+        }
+    }
+
+    private void OnClick(GameObject go)
+    {
+        Debug.Log("OnClick");
+        ShowBuildTownPanel(false);
+
+        if (MazeSystem.Instance().GetGameStep() == MazeGameplayStep.TownDefense)
+        {
+            MazeTileType tileType = MazeSystem.Instance().mapData[row, col].type;
+
+            if (tileType != MazeTileType.Wall)
+                return;
+
+            // 防御塔仅能在经过路径边建造且该地块尚未被建造.
+           if(IsPassPathByAround() && !IsBuildByAround())
+            {
+                ShowBuildTownPanel(true);
+            }
+        }
+    }
+
+    private bool IsPassPathByAround()
+    {
+        foreach (var t in aroundTils)
+        {
+            if (null != t && t.isPass)
+                return true;
+        }
+        return false;
+    }
+
+    private bool IsBuildByAround()
+    {
+        foreach (var t in aroundTils)
+        {
+            if (null != t && t.isBuild)
+                return true;
+        }
+        return false;
+    }
+
+    private void ShowBuildTownPanel(bool bShow)
+    {
+        if(bShow)
+        {
+            UIMazes_TownBuild.Open().SetData(col, row);
         }
         else
         {
-            // 操作优化体验. 点在非周围点, 短距离内可通过寻路到达.
-            List<Vector2Int> lst = MazeSystem.Instance().FindPath(row, col, 5);
-            for (int i = 0; i< lst.Count; i++)
-            {
-                Move2Tile(lst[i].x, lst[i].y);
-            }
+            UIMazes_TownBuild.Close();
         }
     }
     #endregion

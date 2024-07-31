@@ -33,7 +33,7 @@ namespace AStar
         private SortedDictionary<int, int> Open;
         private SortedDictionary<int, int> Close;
 
-        public Dictionary<int, int> FindPath(int start, int end)
+        public List<int> FindPath(int start, int end)
         {
             if (!IsValidPosition(start) || !IsValidPosition(end)) throw new ArgumentOutOfRangeException();
             this.Start = start; this.End = end;
@@ -54,7 +54,7 @@ namespace AStar
                 if (x == End)
                 {
                     // Trace From
-                    return ComeFrom;
+                    return ReconstructPath(ComeFrom, x); ;
                 }
 
                 Open.Remove(x);
@@ -94,6 +94,18 @@ namespace AStar
             }
 
             return null;
+        }
+
+        private List<int> ReconstructPath(Dictionary<int, int> cameFrom, int current)
+        {
+            var path = new List<int> { current };
+            while (cameFrom.ContainsKey(current))
+            {
+                current = cameFrom[current];
+                path.Add(current);
+            }
+            path.Reverse();
+            return path;
         }
 
         private int Start;

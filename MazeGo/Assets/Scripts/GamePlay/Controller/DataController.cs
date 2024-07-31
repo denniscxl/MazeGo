@@ -118,6 +118,18 @@ public class DataController : GKSingleton<DataController>
             case LocalizationSubType.Maze:
                 data = Data.GetLocalizationMazeData(ID);
                 break;
+            // Maze Buff.
+            case LocalizationSubType.MazeBuff:
+                data = Data.GetLocalizationMazeBuffData(ID);
+                break;
+            // Maze Monster.
+            case LocalizationSubType.MazeMonster:
+                data = Data.GetLocalizationMazeMonsterData(ID);
+                break;
+            // Maze Town.
+            case LocalizationSubType.MazeTown:
+                data = Data.GetLocalizationMazeTownData(ID);
+                break;
             default:
                 data = Data.GetLocalizationData(ID);
                 break;
@@ -418,4 +430,7 @@ public enum LocalizationSubType
     Title,              // 4.
     TitleDesc,          // 5.
     Maze,               // 6.
+    MazeBuff,           // 7.
+    MazeMonster,        // 8.
+    MazeTown,           // 9.
 }

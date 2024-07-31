@@ -36,7 +36,7 @@ public class GenerateDeepSearchMaze : GKSingleton<GenerateDeepSearchMaze>
     /// <param name="width"> 宽度 </param>
     /// <param name="height"> 高度 </param>
     /// <param name="data"> 地图数据 </param>
-    public Vector2Int GenerateMaze(int width, int height, out MazeData[,] data)
+    public Vector2Int GenerateMaze(int width, int height, int nestCount, out MazeData[,] data)
     {
         _container.Clear();
         GenerateMapData(width, height);
@@ -44,6 +44,7 @@ public class GenerateDeepSearchMaze : GKSingleton<GenerateDeepSearchMaze>
         GenerateRoguelikeMaze();
         Vector2Int n = GenerateStartEndPoint();
         BreakWall();
+        GenerateNest(nestCount);
         data = _mapData;
 
         return n;
@@ -212,7 +213,6 @@ public class GenerateDeepSearchMaze : GKSingleton<GenerateDeepSearchMaze>
     private Vector2Int GenerateStartEndPoint()
     {
         int r1 = UnityEngine.Random.Range(0, 4);
-        
         int r2 = UnityEngine.Random.Range(0, 4);
         while (r1 == r2)
         {
@@ -321,6 +321,32 @@ public class GenerateDeepSearchMaze : GKSingleton<GenerateDeepSearchMaze>
         for(int i = 0; i < count; i++ )
         {
             _mapData[_lst[i].y, _lst[i].x].type = MazeTileType.Empty;
+        }
+    }
+
+    /// <summary>
+    /// 生成怪物巢穴.
+    /// </summary>
+    /// <param name="count"> 巢穴数 </param>
+    private void GenerateNest(int count)
+    {
+        List<Point> _lst = new List<Point>();
+
+        for (int i = 3; i < _mapData.GetLength(0) - 3; i++)
+        {
+            for (int j = 3; j < _mapData.GetLength(1) - 3; j++)
+            {
+                if (_mapData[i, j].type == MazeTileType.Wall)
+                {
+                    _lst.Add(new Point(i, j));
+                }
+            }
+        }
+
+        GK.ShuffleByList(ref _lst);
+        for (int i = 0; i < count; i++)
+        {
+            _mapData[_lst[i].y, _lst[i].x].type = MazeTileType.Nest;
         }
     }
     #endregion

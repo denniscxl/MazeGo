@@ -26,7 +26,6 @@ public class UIResult_Maze : SingletonUIBase<UIResult_Maze>
     #endregion
 
     #region PublicField
-   
     #endregion
 
     #region PrivateField
@@ -36,6 +35,10 @@ public class UIResult_Maze : SingletonUIBase<UIResult_Maze>
     // 游戏结果标志位.
     private bool _bVictory = false;
     private int _score = 0;
+
+    private int _buffIndex = -1;
+    private int _debuffIndex = -1;
+    private UIBuffItemSample[] buffItems = new UIBuffItemSample[3];
     #endregion
 
     #region PublicMethod
@@ -70,6 +73,7 @@ public class UIResult_Maze : SingletonUIBase<UIResult_Maze>
 
         UpdateLevelPassTime();
         UpdateBuff();
+        BuffSelected(0);
 
         m_ctl.ScoreText.text = _score.ToString();
     }
@@ -124,14 +128,30 @@ public class UIResult_Maze : SingletonUIBase<UIResult_Maze>
     /// </summary>
     private void UpdateBuff()
     {
-        List<MazeBuffType> lst = MazeSystem.Instance().GetRandomBuff();
         GK.DestroyAllChildren(m_ctl.BuffContent);
-        for (int i = 0; i < lst.Count; i++)
+        if(_bVictory)
         {
-            var go = GameObject.Instantiate(m_ctl.UIBuffItemSample.gameObject);
-            go.SetActive(true);
-            GK.SetParent(go, m_ctl.BuffContent, false);
-            GK.GetOrAddComponent<UIBuffItemSample>(go).SetData(lst[i]);
+            List<MazeBuffType> lst = MazeSystem.Instance().GetRandomBuff();
+            for (int i = 0; i < lst.Count; i++)
+            {
+                var go = GameObject.Instantiate(m_ctl.UIBuffItemSample.gameObject);
+                go.SetActive(true);
+                GK.SetParent(go, m_ctl.BuffContent, false);
+                GK.GetOrAddComponent<UIBuffItemSample>(go).SetData(lst[i], i);
+                buffItems[i] = GK.GetOrAddComponent<UIBuffItemSample>(go);
+            }
+        }
+        
+    }
+
+    public void BuffSelected(int idx)
+    {
+        if(_bVictory)
+        {
+            if ((-1 != _buffIndex) && (_buffIndex < buffItems.GetLength(0)))
+                buffItems[_buffIndex].UpdateHighlight(false);
+            _buffIndex = idx;
+            buffItems[idx].UpdateHighlight(true);
         }
     }
 
@@ -144,6 +164,8 @@ public class UIResult_Maze : SingletonUIBase<UIResult_Maze>
     {
         if(_bVictory)
         {
+            if (0 <= _buffIndex && _buffIndex < buffItems.Length)
+                MazeSystem.Instance().ActiveBuff(buffItems[_buffIndex].GetBuffType());
             LevelController.Instance().InitData();
         }
         else

@@ -2,6 +2,7 @@
 using UnityEngine;
 using GKBase;
 using GKUI;
+using System.Collections.Generic;
 
 public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
 {
@@ -21,6 +22,8 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
         public Text RecordVal;
         public GameObject Arrow;
         public RawImage FogRenderer;
+        public GameObject BuffState;
+        public UIBuffStateSample UIBuffStateSample;
     }
     #endregion
 
@@ -54,6 +57,12 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
     {
         t.SetHighLight();
     }
+
+    public void SetNpcRoot(GameObject obj, Vector3 pos)
+    {
+        GK.SetParent(obj, m_ctl.Root, false);
+        obj.transform.position = pos;
+    }
     #endregion
 
     #region PrivateMethod
@@ -84,7 +93,7 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
 
     private void Init() 
     {
-        Debug.Log("UIMazes_Main - Init");
+        //Debug.Log("UIMazes_Main - Init");
 
         // 初始化高亮对象.
         highLight = GameObject.Instantiate(_highLightSample).GetComponent<RectTransform>(); ;
@@ -108,7 +117,6 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
                 mazeTile.col = j;
                 MazeSystem.Instance().mapData[i, j].tileSample = mazeTile;
 
-
                 if (MazeSystem.Instance().mapData[i, j].type == MazeTileType.Start)
                     MazeSystem.Instance().curSelectTile = MazeSystem.Instance().mapData[i, j].tileSample;
             }
@@ -131,6 +139,26 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
         FogOfWar.Instance().Update();
 
         // 更新Buff状态.
+        UpdateBuffState();
+    }
+
+    /// <summary>
+    /// 更新Buff状态及图标.
+    /// </summary>
+    private void UpdateBuffState()
+    {
+        GK.DestroyAllChildren(m_ctl.BuffState);
+        for (int i = 0; i < GK.EnumCount<MazeBuffType>(); i++)
+        {
+            if (MazeSystem.Instance().GetData().GetAttribute((int)EObjectAttr.MazeBuffArrow + i).ValInt == 1)
+            {
+                var go = GameObject.Instantiate(m_ctl.UIBuffStateSample.gameObject);
+                go.SetActive(true);
+                GK.SetParent(go, m_ctl.BuffState, false);
+                GK.GetOrAddComponent<UIBuffStateSample>(go).SetData((MazeBuffType)i);
+            }
+        }
+
         _bShowArrow = MazeSystem.Instance().GetData().GetAttribute((int)EObjectAttr.MazeBuffArrow).ValInt == 1;
         m_ctl.Arrow.SetActive(_bShowArrow);
     }
@@ -161,6 +189,9 @@ public class UIMazes_Main : SingletonUIBase<UIMazes_Main>
     private void UpdateTime()
     {
         if (null == m_ctl || null == m_ctl.NumberA)
+            return;
+
+        if (-1 == MazeSystem.Instance().GetCurLevelTime())
             return;
 
         int t = MazeSystem.Instance().GetCurLevelTime();

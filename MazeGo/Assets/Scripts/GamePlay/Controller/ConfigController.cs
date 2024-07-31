@@ -36,6 +36,9 @@ public class ConfigController : GKSingleton<ConfigController>
     public Sprite GetUISprite(string  spritePath)
     {
         var go = GK.LoadPrefab("UI/Sprites/" + spritePath);
+        if (null == go)
+            Debug.LogError(string.Format("GetUISprite Faile. path: {0}", "UI/Sprites/" + spritePath));
+
         var sprite = go.GetComponent<SpriteRenderer>();
         if (null == go && null == sprite)
             return null;

@@ -50,19 +50,21 @@ public enum EObjectAttr
     MazeLevelBestTime,      // 每关最佳通关时间.
 
     // Buff 区间字段.
-    MazeBuffArrow,      // Buff功能 - 终点箭头.
-    TimeIncrementI,     // Buff功能 - 回合结束时间增量 - 1.
-    TimeIncrementII,    // 回合结束时间增量 - 2.
-    TimeIncrementIII,   // 回合结束时间增量 - 3.
-    TimeAdditionI,      // 一次性时间增量 - 5.
-    TimeAdditionII,     // 一次性时间增量 - 10.
-    TimeAdditionIII,    // 一次性时间增量 - 15.
-    MapDecrementI,      // 回合结束地图尺寸减量 - 1.
-    MapDecrementII,     // 回合结束地图尺寸减量 - 2.
-    MapDecrementIII,    // 回合结束地图尺寸减量 - 3.
-    MapReduceI,         // 一次性地图尺寸减少量 - 3.
-    MapReduceII,        // 一次性地图尺寸减少量 - 5.
-    MapReduceIII        // 一次性地图尺寸减少量 - 8.
-
+    MazeBuffArrow,          // Buff功能 - 终点箭头.
+    MazeTimeIncrementI,     // Buff功能 - 回合结束时间增量 - 1.
+    MazeTimeIncrementII,    // Buff功能 - 回合结束时间增量 - 2.
+    MazeTimeIncrementIII,   // Buff功能 - 回合结束时间增量 - 3.
+    MazeTimeAdditionI,      // Buff功能 - 一次性时间增量 - 5.
+    MazeTimeAdditionII,     // Buff功能 - 一次性时间增量 - 10.
+    MazeTimeAdditionIII,    // Buff功能 - 一次性时间增量 - 15.
+    MazeMapDecrementI,      // Buff功能 - 回合结束地图尺寸减量 - 1.
+    MazeMapDecrementII,     // Buff功能 - 回合结束地图尺寸减量 - 2.
+    MazeMapDecrementIII,    // Buff功能 - 回合结束地图尺寸减量 - 3.
+    MazeMapReduceI,         // Buff功能 - 一次性地图尺寸减少量 - 3.
+    MazeMapReduceII,        // Buff功能 - 一次性地图尺寸减少量 - 5.
+    MazeMapReduceIII,       // Buff功能 - 一次性地图尺寸减少量 - 8.
+    NestReduceI,            // Buff功能 - 一次性怪物巢穴减少量 - 1.
+    NestReduceII,           // Buff功能 - 一次性怪物巢穴减少量 - 2.
+    NestReduceIII,          // Buff功能 - 一次性怪物巢穴减少量 - 3.
 
 }

@@ -347,6 +347,68 @@ MonoBehaviour:
     points: 300
     title: 60
     parameter: 0a000000e8030000
+  _mazeMonsterData:
+  - id: 0
+    hp: 100
+    speed: 0.2
+  - id: 1
+    hp: 80
+    speed: 0.4
+  - id: 2
+    hp: 90
+    speed: 0.3
+  - id: 3
+    hp: 85
+    speed: 0.5
+  - id: 4
+    hp: 200
+    speed: 0.2
+  _mazeTownData:
+  - id: 0
+    damage: 10
+    atkSpeed: 1
+    range: 2
+    targetType: 1
+    bulletSpeed: 2
+    time: 5
+    bulletRange: 0
+    bulletType: 0
+  - id: 1
+    damage: 15
+    atkSpeed: 2
+    range: 2
+    targetType: 1
+    bulletSpeed: 2
+    time: 5
+    bulletRange: 0
+    bulletType: 0
+  - id: 2
+    damage: 3
+    atkSpeed: 0.3
+    range: 3
+    targetType: 1
+    bulletSpeed: 2
+    time: 5
+    bulletRange: 0
+    bulletType: 0
+  - id: 3
+    damage: 8
+    atkSpeed: 1
+    range: 3
+    targetType: 2
+    bulletSpeed: 0.5
+    time: 99
+    bulletRange: 1
+    bulletType: 1
+  - id: 4
+    damage: 10
+    atkSpeed: 1.5
+    range: 4
+    targetType: 2
+    bulletSpeed: 0.5
+    time: 99
+    bulletRange: 1.5
+    bulletType: 1
   _localizationData:
   - id: 0
     english: ID
@@ -475,8 +537,8 @@ MonoBehaviour:
     english: UpgradeSuccess
     chinese: "\u5347\u7EA7\u6210\u529F"
   - id: 42
-    english: 60 Seconds's Maze
-    chinese: "60\u79D2\u7684\u8FF7\u5BAB"
+    english: Maze GO
+    chinese: "\u8FF7\u5BAB GO"
   - id: 43
     english: Start
     chinese: "\u5F00\u59CB"
@@ -1411,6 +1473,13 @@ MonoBehaviour:
     chinese: "\u65E0 "
   _localizationMazeData:
   - id: 0
+    english: Monster will attack for {0} seconds
+    chinese: "\u602A\u7269\u5C06\u8FDB\u653B{0}\u79D2"
+  - id: 1
+    english: Attack Cooming soon!
+    chinese: "\u653B\u51FB\u5373\u5C06\u5230\u6765!"
+  _localizationMazeBuffData:
+  - id: 0
     english: The vector of the end
     chinese: "\u7EC8\u70B9\u4E4B\u77E2"
   - id: 1
@@ -1449,3 +1518,44 @@ MonoBehaviour:
   - id: 12
     english: Reducing the map III
     chinese: "\u7F29\u5C0F\u5730\u56FE III"
+  - id: 13
+    english: NestReduceI
+    chinese: "\u5DE2\u7A74\u51CF\u5C11I"
+  - id: 14
+    english: NestReduceII
+    chinese: "\u5DE2\u7A74\u51CF\u5C11II"
+  - id: 15
+    english: NestReduceIII
+    chinese: "\u5DE2\u7A74\u51CF\u5C11III"
+  _localizationMazeMonsterData:
+  - id: 0
+    english: Slim
+    chinese: "\u53F2\u83B1\u59C6"
+  - id: 1
+    english: Mini Devil
+    chinese: "\u5C0F\u6076\u9B54"
+  - id: 2
+    english: Gargoyle
+    chinese: "\u77F3\u50CF\u602A"
+  - id: 3
+    english: Devil
+    chinese: "\u6076\u9B54"
+  - id: 4
+    english: Zombie
+    chinese: "\u50F5\u5C38"
+  _localizationMazeTownData:
+  - id: 0
+    english: Base Town
+    chinese: "\u57FA\u7840\u5854"
+  - id: 1
+    english: Base Town 2
+    chinese: "\u57FA\u7840\u5854 2"
+  - id: 2
+    english: Base Town 3
+    chinese: "\u57FA\u7840\u5854 3"
+  - id: 3
+    english: Base Town 4
+    chinese: "\u57FA\u7840\u5854 4"
+  - id: 4
+    english: Base Town 5
+    chinese: "\u57FA\u7840\u5854 5"
